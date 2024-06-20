@@ -1,6 +1,5 @@
 #pragma once
 #include <stdint.h>
-
 /*
  *  these are the basic numerical types
  */
@@ -27,17 +26,20 @@
 // 80-bit floating point (x86 long double)
 #define f80 long double
 
+// finely the bools
+typedef enum { false, true } bool;
+
 /*
  * these are the more complex but still basic datatypes
  */
 
 typedef struct vec2 {
-        int x;
-        int y;
+        i32 x;
+        i32 y;
 } vec2;
 
 typedef struct matrix {
-        int r;
-        int c;
-        int *data;
+        i32 r;
+        i32 c;
+        i32 *data;
 } matrix;

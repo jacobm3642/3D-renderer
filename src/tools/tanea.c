@@ -1,3 +1,8 @@
+/*
+ * Tanea is a simple tools used to make bitmap images
+ */
+
+
 #include "tanea.h"
 #include <stdio.h>
 #include <stdint.h>
