@@ -1,7 +1,7 @@
 #! /bin/bash
 project_dirctory=$(pwd)
 files=$(find $project_dirctory/src -not -path "$project_directory/src/test*" -name '*.c' -type f -printf "%p\n" | grep -v '/test/')  
-uni_flags="-m64 -I./include/" 
+uni_flags="-m64 -I./include/ -lm" 
 
 while getopts ":rdt" opt; do
   case $opt in

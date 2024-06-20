@@ -4,5 +4,5 @@
 
 void runTests()
 {
-  run_geo_tests();
+        run_geo_tests();
 }

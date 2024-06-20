@@ -32,12 +32,12 @@
  */
 
 typedef struct vec2 {
-  int x;
-  int y;
+        int x;
+        int y;
 } vec2;
 
 typedef struct matrix {
-  int r;
-  int c;
-  int *data;
+        int r;
+        int c;
+        int *data;
 } matrix;
