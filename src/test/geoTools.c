@@ -4,6 +4,8 @@
 #include "dataTypes.h"
 #include "geometric_tools.h"
 
+#include "tanea.h"
+
 START_TEST(vec_add_test)
 {
         vec2 v1 = {1, 1};
@@ -29,9 +31,9 @@ START_TEST(vec_is_ccw_test)
 START_TEST(vec_line_intersect_test)
 {
         vec2 p1 = {0, 0};
-        vec2 p2 = {100, 100};
-        vec2 p3 = {5, 0};
-        vec2 p4 = {-5, 20};
+        vec2 p2 = {1000, 1000};
+        vec2 p3 = {100, 0};
+        vec2 p4 = {0, 200};
         ck_assert(line_intersect(p1, p2, p3, p4) == true);
         ck_assert(line_intersect(p1, p3, p1, p4) == false);
         ck_assert(line_intersect(p2, p1, p4, p3) == true);
@@ -73,5 +75,5 @@ void run_geo_tests()
         failed = srunner_ntests_failed(runner);
 
         srunner_free(runner);
-        printf("%d of %d Passed\n", run-failed, run);
+        printf("\n%d of %d Passed\n", run-failed, run);
 }

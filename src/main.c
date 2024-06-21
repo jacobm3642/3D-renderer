@@ -1,3 +1,5 @@
+#include "dataTypes.h"
+#include "stackallocator.h"
 #include <stdio.h>
 #ifdef test 
 #include "tests.h"  

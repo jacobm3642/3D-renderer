@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <stddef.h>
 /*
  *  these are the basic numerical types
  */
@@ -37,6 +38,11 @@ typedef struct vec2 {
         i32 x;
         i32 y;
 } vec2;
+
+typedef struct polygon {
+        size_t size;
+        vec2 *points;
+} polygon;
 
 typedef struct matrix {
         i32 r;
