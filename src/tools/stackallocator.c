@@ -1,22 +1,23 @@
 #include "stackallocator.h"
+#include "dataTypes.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+
 
 void init_allocator(stackAllocator *allocator, size_t size)
 {
     allocator->size = size;
     allocator->offset = 0;
     allocator->frameCount = 0;
-    allocator->maxFrames = size / 10;  // Adjust maxFrames as per your requirement
+    allocator->maxFrames = size / 10;
     allocator->allocatedFrames = malloc(sizeof(dataFrame) * allocator->maxFrames);
     allocator->blob = malloc(size);
 }
 
 i32 allocate_block(stackAllocator *allocator, size_t size)
 {
-    if (allocator->offset + size > allocator->size) return -1; // Not enough space
-    if (allocator->frameCount == allocator->maxFrames) return -1; // Max frames reached
+    if (allocator->offset + size > allocator->size) return -1;
+    if (allocator->frameCount == allocator->maxFrames) return -1;
     size_t frameIndex = allocator->frameCount;
     allocator->allocatedFrames[frameIndex].size = size;
     allocator->allocatedFrames[frameIndex].inUse = true;
@@ -25,7 +26,28 @@ i32 allocate_block(stackAllocator *allocator, size_t size)
     allocator->frameCount++;
     
     allocator->offset += size;
-    return frameIndex; // Return index of allocated frame
+    return frameIndex;
+}
+
+void deallocate(stackAllocator *s)
+{
+        size_t i = s->frameCount - 1;
+        while (s->frameCount > 0) { 
+                if (s->allocatedFrames[i].inUse == false) {
+                        s->offset -= s->allocatedFrames[i].size;
+                        s->frameCount -= 1;
+                        i -= 1;
+                } else {
+                        break;
+                }
+        }
+}
+
+void free_block(stackAllocator *s, size_t index)
+{
+        if (index >= s->frameCount) return;
+        s->allocatedFrames[index].inUse = false;
+        deallocate(s);
 }
 
 void free_allocator(stackAllocator *allocator)

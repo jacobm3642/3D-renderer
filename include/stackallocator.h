@@ -20,5 +20,6 @@ void init_allocator(stackAllocator *allocator, size_t size);
 void print_allocator(stackAllocator *allocator);
 void free_allocator(stackAllocator *allocator);
 i32 allocate_block(stackAllocator *allocator, size_t size);
+void free_block(stackAllocator *s, size_t index);
 void print_frameData(stackAllocator *allocator, size_t index);
 
