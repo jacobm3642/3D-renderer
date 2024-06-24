@@ -8,12 +8,12 @@ typedef struct dataFrame{
 } dataFrame;
 
 typedef struct stackAllocator {
-    size_t offset;
-    size_t size;
-    size_t frameCount;
-    size_t maxFrames;
-    dataFrame *allocatedFrames;
-    void *blob;
+        size_t offset;
+        size_t size;
+        size_t frameCount;
+        size_t maxFrames;
+        dataFrame *allocatedFrames;
+        void *blob;
 } stackAllocator;
 
 void init_allocator(stackAllocator *allocator, size_t size);

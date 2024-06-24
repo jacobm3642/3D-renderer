@@ -1,4 +1,7 @@
 #include "dataTypes.h"
+#include "stackallocator.h"
+
+extern stackAllocator mainMem;
 
 vec2 vec_add(vec2 v1, vec2 v2)
 {

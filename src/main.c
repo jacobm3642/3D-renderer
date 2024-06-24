@@ -5,13 +5,16 @@
 #include "tests.h"  
 #endif
 
+stackAllocator mainMem;
+
 int main()
 {
+        init_allocator(&mainMem, 1000000);
 #ifdef test 
         runTests();
-        return  0;
 #endif
         printf("ruinning main\n");
 
+        free_allocator(&mainMem);
         return 0;
 }
