@@ -115,8 +115,8 @@ void fill(int x , int y, uint32_t color, uint32_t backcolor)
 
 void drawLine(vec2 p1, vec2 p2, int thickness , uint32_t color)
 {
-        int dx = abs(p2.x - p1.x);
-        int dy = abs(p2.y - p1.y);
+        int dx = fabs(p2.x - p1.x);
+        int dy = fabs(p2.y - p1.y);
         int sx = (p1.x < p2.x) ? 1 : -1;
         int sy = (p1.y < p2.y) ? 1 : -1;
         int err = dx - dy;

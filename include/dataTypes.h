@@ -35,8 +35,8 @@ typedef enum { false, true } bool;
  */
 
 typedef struct vec2 {
-        i32 x;
-        i32 y;
+        f64 x;
+        f64 y;
 } vec2;
 
 typedef struct polygon {
