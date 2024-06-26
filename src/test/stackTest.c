@@ -89,7 +89,7 @@ Suite *stack_test_suite()
         return s;
 }
 
-void stack_allocator_tests()
+vec2 stack_allocator_tests()
 {
         int failed = 0;
         int run = 0;
@@ -108,4 +108,6 @@ void stack_allocator_tests()
 
         srunner_free(runner);
         printf("\n%d of %d Passed\n", run-failed, run);
+        vec2 out = {run-failed, run};
+        return  out;
 }

@@ -66,9 +66,7 @@ i32 signed_area(vec2 a, vec2 b, vec2 c)
     vec2 p = vec_subtract(b, a);
     vec2 q = vec_subtract(c, a);
 
-    i32 cross_product = (p.x * q.y) - (q.x * p.y);
-
-    return cross_product / 2;
+    return (p.x * q.y) - (q.x * p.y);
 }
 
 bool is_ccw(vec2 a, vec2 b, vec2 c)

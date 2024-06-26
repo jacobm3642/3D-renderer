@@ -37,17 +37,17 @@ START_TEST(vec_subtract_test)
 
 START_TEST(signed_area_test)
 {
-    vec2 a = {1, 1};
-    vec2 b = {2, 3};
-    vec2 c = {3, 2};
+    vec2 a = {0, 0};
+    vec2 b = {1, 0};
+    vec2 c = {0, 1};
     
     // Test case 1: Calculating signed area of triangle a, b, c
     i32 area1 = signed_area(a, b, c);
-    ck_assert_int_eq(area1, -1);
+    ck_assert_int_eq(area1, 1);
 
     // Test case 2: Reversing order to calculate signed area of triangle c, b, a
     i32 area2 = signed_area(c, b, a);
-    ck_assert_int_eq(area2, 1);
+    ck_assert_int_eq(area2, -1);
 } END_TEST
 
 START_TEST(dot_test)
@@ -157,7 +157,7 @@ Suite *geo_test_suite()
         return s;
 }
 
-void run_geo_tests()
+vec2 run_geo_tests()
 {
         int failed = 0;
         int run = 0;
@@ -176,4 +176,6 @@ void run_geo_tests()
 
         srunner_free(runner);
         printf("\n%d of %d Passed\n", run-failed, run);
+        vec2 out = {run-failed, run};
+        return  out;
 }

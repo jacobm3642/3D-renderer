@@ -1,5 +1,7 @@
 #pragma once
 
-void run_geo_tests();
-void stack_allocator_tests();
+#include "dataTypes.h"
+
+vec2 run_geo_tests();
+vec2 stack_allocator_tests();
 void runTests();
