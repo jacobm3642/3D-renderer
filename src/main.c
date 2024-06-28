@@ -1,6 +1,8 @@
 #include "dataTypes.h"
 #include "errors.h"
 #include "stackallocator.h"
+#include "engine.h"
+
 #include <setjmp.h>
 #include <stdio.h>
 #ifdef test 
@@ -19,7 +21,7 @@ int main()
 #endif
         i32 returnvalue;
         if(!(returnvalue = setjmp(fatal_error))) {
-                printf("ruinning main\n");
+                engineMain();
         } else {
                 display_error(returnvalue);
         }
