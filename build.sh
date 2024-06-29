@@ -1,7 +1,23 @@
 #! /bin/bash
 project_dirctory=$(pwd)
 files=$(find $project_dirctory/src -not -path "$project_directory/src/test*" -name '*.c' -type f -printf "%p\n" | grep -v '/test/')  
-uni_flags="-m64 -I./include/ -lm" 
+uni_flags="-m64 -I./include/ -lm -lSDL2 -lGL -lGLEW" 
+
+if [ ! -d ./build ]; then
+    mkdir build
+fi
+
+if [ ! -d ./build/debug ]; then
+    mkdir build/debug
+fi
+
+if [ ! -d ./build/realise ]; then
+    mkdir build/realise
+fi
+
+if [ ! -d ./build/testing ]; then
+    mkdir build/testing
+fi
 
 while getopts ":rdt" opt; do
   case $opt in
