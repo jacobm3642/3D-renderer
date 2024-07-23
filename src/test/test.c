@@ -18,5 +18,5 @@ void runTests()
                 printf("\n \x1b[31m");  
         }
 
-        printf("%d of %d passed \x1b[0m \n", (int)total.x, (int)total.y);
+        printf("%d of %d total passed \x1b[0m \n", (int)total.x, (int)total.y);
 }

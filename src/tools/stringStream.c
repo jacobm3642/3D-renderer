@@ -58,3 +58,19 @@ void readInFile(stringStream *ss, char *fileName)
         }
         fclose(fptr);
 }
+
+char *readFileString(char *file)
+{
+        stringStream *ss = initStringStream();
+        readInFile(ss, file);
+        char *shader = ss->string;
+        free(ss);
+        return shader;
+}
+
+char *readRes(char *filename)
+{
+        char buffer[255];
+        sprintf(buffer, "./res/%s", filename);
+        return readFileString(buffer);
+}

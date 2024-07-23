@@ -12,5 +12,6 @@ stringStream *initStringStream();
 void ssAppend(stringStream *ss, char *string, int len);
 
 void readInFile(stringStream *ss, char *fileName);
+char *readRes(char *filename);
 
 #endif
