@@ -39,6 +39,29 @@ typedef struct vec2 {
         f64 y;
 } vec2;
 
+typedef struct vec3 {
+        f64 x;
+        f64 y;
+        f64 z;
+} vec3;
+
+typedef struct vec4 {
+        f64 x;
+        f64 y;
+        f64 z;
+        f64 a;
+} vec4;
+
+typedef union homogeneousVec2 {
+        vec2 vec2;
+        vec3 vec3;
+} homogeneousVec2;
+
+typedef union homogeneousVec3 {
+        vec3 vec3;
+        vec4 vec4;
+} homogeneousVec3;
+
 typedef struct polygon {
         size_t size;
         vec2 *points;
