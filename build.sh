@@ -2,6 +2,7 @@
 project_dirctory=$(pwd)
 files=$(find $project_dirctory/src -not -path "$project_directory/src/test*" -name '*.c' -type f -printf "%p\n" | grep -v '/test/')  
 uni_flags="-m64 -I./include/ -lm -lSDL2 -lGL -lGLEW" 
+valgrind="F"
 
 if [ ! -d ./build ]; then
     mkdir build
@@ -19,7 +20,7 @@ if [ ! -d ./build/testing ]; then
     mkdir build/testing
 fi
 
-while getopts ":rdt" opt; do
+while getopts ":rdtv" opt; do
   case $opt in
     t)
       echo "building tests ....." >&2 
@@ -38,6 +39,9 @@ while getopts ":rdt" opt; do
       run_path=./build/debug
       bear -- gcc $build_flags
       ;;
+    v)
+      valgrind="T"
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       build_flags=""
@@ -48,3 +52,7 @@ done
 
 gcc $build_flags
 $run_path/main
+
+if [[ $valgrind == "T" ]]; then
+  valgrind --leak-check=full --show-leak-kinds=all --log-file="valgrind.output.txt" ./build/debug/main
+fi
