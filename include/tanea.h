@@ -16,6 +16,7 @@ typedef struct frac {
 } frac;
 
 int save_to_ppm(const char *filePath);
+void setThickPixel(int x, int y, int thickness, uint32_t color);
 void fill_canvas(uint32_t color);
 void drawRec(int x, int y, int width, int hight, uint32_t color);
 void drawLine(vec2 p1, vec2 p2, int thickness, uint32_t color);

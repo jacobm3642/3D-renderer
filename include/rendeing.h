@@ -14,7 +14,12 @@ typedef struct Object {
         GLuint shaderProgram;
         GLuint VBO;
         GLsizei vertexCount;
-        struct Object **sub_objs;
 } Object;
+
+typedef struct Objnode {
+        Object *obj;
+        struct Objnode *left;
+        struct Objnode *right;
+} Objnode;
 
 void startRenderer(WindowState *window);

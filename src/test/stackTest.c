@@ -63,6 +63,19 @@ START_TEST(dealloc_test)
         free_allocator(&s);
 }END_TEST
 
+START_TEST(ptr_dealloc_test)
+{
+        stackAllocator s;
+        init_allocator(&s, 100);
+        vec2 *v1 = s.allocatedFrames[allocate_block(&s, sizeof(vec2))].sptr;
+        vec2 *v2 = s.allocatedFrames[allocate_block(&s, sizeof(vec2))].sptr;
+        free_block_ptr(&s, v1);
+        free_block_ptr(&s, &v2->y);
+
+        ck_assert(s.frameCount == 0);
+
+}END_TEST;
+
 START_TEST(global_memory_pool_test)
 {
         i32 index = allocate_block(&mainMem, 10);
@@ -82,6 +95,7 @@ Suite *stack_test_suite()
         tcase_add_test(tc, allocator_frame_test);
         tcase_add_test(tc, store_test);
         tcase_add_test(tc, dealloc_test);
+        tcase_add_test(tc, ptr_dealloc_test);
         tcase_add_test(tc, global_memory_pool_test);
 
         suite_add_tcase(s, tc);

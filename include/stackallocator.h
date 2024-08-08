@@ -21,5 +21,6 @@ void print_allocator(stackAllocator *allocator);
 void free_allocator(stackAllocator *allocator);
 i32 allocate_block(stackAllocator *allocator, size_t size);
 void free_block(stackAllocator *s, size_t index);
+void free_block_ptr(stackAllocator *s, void *ptr);
 void print_frameData(stackAllocator *allocator, size_t index);
 

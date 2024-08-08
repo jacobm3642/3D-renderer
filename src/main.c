@@ -4,7 +4,7 @@
 #include "engine.h"
 
 #include <setjmp.h>
-#include <stdio.h>
+
 #ifdef test 
 #include "tests.h"  
 #endif
@@ -20,12 +20,12 @@ int main()
         runTests();
 #endif
         i32 returnvalue;
+        
         if(!(returnvalue = setjmp(fatal_error))) {
                 engineMain();
         } else {
                 display_error(returnvalue);
         }
-
         free_allocator(&mainMem);
         return 0;
 }

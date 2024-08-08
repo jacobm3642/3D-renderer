@@ -1,5 +1,6 @@
 #include "stackallocator.h"
 #include "dataTypes.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -53,6 +54,22 @@ void free_block(stackAllocator *s, size_t index)
         if (index >= s->frameCount) return;
         s->allocatedFrames[index].inUse = false;
         deallocate(s);
+}
+
+void free_block_ptr(stackAllocator *s, void *ptr)
+{
+        intptr_t ptrintrp = (intptr_t)ptr;
+
+        for (size_t i = 0; i < s->frameCount; i++) {
+                if (ptr == s->allocatedFrames[i].sptr) {
+                        free_block(s, i);
+                        return;
+                }
+                if (ptrintrp > (intptr_t)s->allocatedFrames[i].sptr && ptrintrp < (intptr_t)s->allocatedFrames[i].sptr + (intptr_t)s->allocatedFrames[i].size) {
+                        free_block(s, i);
+                        return;
+                }
+        }
 }
 
 void free_allocator(stackAllocator *allocator)

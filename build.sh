@@ -4,6 +4,8 @@ files=$(find $project_dirctory/src -not -path "$project_directory/src/test*" -na
 uni_flags="-m64 -I./include/ -lm -lSDL2 -lGL -lGLEW" 
 valgrind="F"
 
+echo -e "\033[31mWARINING DOESNT WORK ON WAYLAND\033[0m"
+
 if [ ! -d ./build ]; then
     mkdir build
 fi

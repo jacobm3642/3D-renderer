@@ -31,14 +31,12 @@ void mainLoop(WindowState *windowState)
 
         while (windowState->running) {
                 curTicks = SDL_GetTicks();
-                windowState->deltaTime = (curTicks - preTicks)/ 1000.0f;
+                windowState->deltaTime = (curTicks - preTicks)/ 20.0f;
                 windowState->totalTime += windowState->deltaTime;
                 preTicks = curTicks;
                 dt = windowState->deltaTime;
                 acumulator += dt;
-
                 if (acumulator >= target) {
-                        
 
                         acumulator -= 1;
                 }

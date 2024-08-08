@@ -3,7 +3,7 @@
 
 extern stackAllocator mainMem;
 
-// hey look it famous
+// hey look it's famous
 // i know there are better ways but i just wanna use the famous quick inverse sqrt
 // 2nd iteration was readded inorder io be within 0.0001 of the real value
 float Q_rsqrt(float number)
@@ -78,4 +78,4 @@ bool is_ccw(vec2 a, vec2 b, vec2 c)
 bool line_intersect(vec2 a, vec2 b, vec2 c, vec2 d)
 {
         return (is_ccw(a, d, b) != is_ccw(a, c, b)) && (is_ccw(c, a, d) != is_ccw(c, b, d)) ? true : false; 
-}
+} 

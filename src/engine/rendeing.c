@@ -1,6 +1,9 @@
 #include "rendeing.h"
+#include "stackallocator.h"
 #include "window.h"
 #include "stringStream.h"
+#include <stdlib.h>
+#include <wchar.h>
 
 void startRenderer(WindowState *window)
 {
@@ -41,4 +44,11 @@ GLuint attachShader(GLuint vertexShader, GLuint fragmentShader)
         glDeleteShader(fragmentShader);
 
         return shaderProgram;
+}
+
+Object *parce_manafest(char *name)
+{
+        Object *obj = malloc(sizeof(Object));
+        char *contence = readRes(name);
+        return  obj;
 }
