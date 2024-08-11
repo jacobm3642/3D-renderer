@@ -177,5 +177,5 @@ vec2 run_geo_tests()
         srunner_free(runner);
         printf("\n%d of %d Passed\n", run-failed, run);
         vec2 out = {run-failed, run};
-        return  out;
+        return out;
 }

@@ -63,15 +63,6 @@ typedef union homogeneousVec3 {
         vec4 vec4;
 } homogeneousVec3;
 
-typedef struct vec {
-      vecType type;
-      union {
-                vec2 vec2;
-                vec3 vec3;
-                vec4 vec4;
-      } data;
-} vec;
-
 typedef struct polygon {
         size_t size;
         vec2 *points;
