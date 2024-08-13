@@ -30,7 +30,7 @@
 // finely the bools
 typedef enum { false, true } bool;
 
-typedef enum {Vec2, Vec3, Vec4} vecType;
+typedef enum {Vec2, Vec3, Vec4, error} vecType;
 /*
  * these are the more complex but still basic datatypes
  */
@@ -50,7 +50,7 @@ typedef struct vec4 {
         f64 x;
         f64 y;
         f64 z;
-        f64 a;
+        f64 w;
 } vec4;
 
 typedef union homogeneousVec2 {
@@ -62,6 +62,15 @@ typedef union homogeneousVec3 {
         vec3 vec3;
         vec4 vec4;
 } homogeneousVec3;
+
+typedef struct vec {
+        vecType type;
+        union {
+                vec2 vec2;
+                vec3 vec3;
+                vec4 vec4;
+        } data;
+} vec;
 
 typedef struct polygon {
         size_t size;

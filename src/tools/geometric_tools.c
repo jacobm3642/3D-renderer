@@ -28,6 +28,36 @@ float lerp(float v0, float v1, float t)
         return (1 - t) * v0 + t * v1;
 }
 
+vec uni_vec_add(vec v1, vec v2)
+{
+        vec out = {error, .data.vec4 = {-1, -1, -1, -1}};
+        if (v1.type != v2.type) {
+                return out;
+        }
+        if (v1.type == error || v2.type == error) {
+                return out;
+        }
+
+        out.type = v1.type;
+
+        // the fall-through is intentional
+        switch (v1.type) {
+                case Vec4:
+                        out.data.vec4.w = v1.data.vec4.w + v2.data.vec4.w;
+                case Vec3:
+                        out.data.vec4.z = v1.data.vec4.z + v2.data.vec4.z;
+                case Vec2:
+                        out.data.vec4.y = v1.data.vec4.y + v2.data.vec4.y;
+                        out.data.vec4.x = v1.data.vec4.x + v2.data.vec4.x;
+                        break;
+                case error:
+                        // redundent but clang gets mad if i dont include it 
+                        out.type = error;
+        }
+
+        return out;
+}
+
 vec2 vec_add(vec2 v1, vec2 v2)
 {
         vec2 out;
