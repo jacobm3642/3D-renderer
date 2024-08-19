@@ -1,7 +1,7 @@
 #! /bin/bash
 project_dirctory=$(pwd)
 files=$(find $project_dirctory/src -not -path "$project_directory/src/test*" -name '*.c' -type f -printf "%p\n" | grep -v '/test/')  
-uni_flags="-m64 -I./include/ -lm -lSDL2 -lGL -lGLEW" 
+uni_flags="-m64 -I./include/ -lm -lSDL2 -lGL -lGLEW -Wno-error=implicit-fallthrough" 
 valgrind="F"
 
 echo -e "\033[31mWARINING DOESNT WORK ON WAYLAND\033[0m"

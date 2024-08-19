@@ -11,9 +11,16 @@ typedef struct objectManafest {
 } objectManafest;
 
 typedef struct Object {
-        GLuint shaderProgram;
-        GLuint VBO;
-        GLsizei vertexCount;
+        vec2* vertices;
+        size_t count;
+        union {                
+                unsigned int shaderProgram;
+                struct {
+                        unsigned int vertexShader;
+                        unsigned int fragmentShader;
+                } shaders;
+        } shader;
+
 } Object;
 
 typedef struct Objnode {

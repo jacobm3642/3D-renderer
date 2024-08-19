@@ -68,6 +68,13 @@ char *readFileString(char *file)
         return shader;
 }
 
+char *readShader(char *filename, char *type)
+{
+        char buffer[255];
+        sprintf(buffer, "./res/%s/%s", type, filename);
+        return readFileString(buffer);
+}
+
 char *readRes(char *filename)
 {
         char buffer[255];

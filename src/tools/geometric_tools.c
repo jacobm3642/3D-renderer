@@ -1,5 +1,6 @@
 #include "dataTypes.h"
 #include "stackallocator.h"
+#include "engine_internal.h"
 
 extern stackAllocator mainMem;
 
@@ -108,4 +109,20 @@ bool is_ccw(vec2 a, vec2 b, vec2 c)
 bool line_intersect(vec2 a, vec2 b, vec2 c, vec2 d)
 {
         return (is_ccw(a, d, b) != is_ccw(a, c, b)) && (is_ccw(c, a, d) != is_ccw(c, b, d)) ? true : false; 
-} 
+}
+
+//vec Bezier_spline(vec p0, vec p1, vec p2, vec p3, f32 t)
+//{
+//        vec out = {error, .data.vec2 = {-1, -1}};
+//        if (t < 0 || t > 1) {
+//                return out;
+//        }
+//        if (p0.type != Vec2) {
+//                return out;
+//        }
+//        if (!(p0.type == p1.type == p2.type == p3.type)) {
+//                return out;
+//        }
+//        out.type = p0.type;
+//        
+//}

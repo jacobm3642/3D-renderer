@@ -11,7 +11,8 @@ void runTests()
         
         total = vec_add(run_geo_tests(), total);
         total = vec_add(stack_allocator_tests(), total);
-        
+        total = vec_add(string_test(), total);
+
         if (total.x == total.y) {
                 printf("\n \x1b[32m");  
         } else {

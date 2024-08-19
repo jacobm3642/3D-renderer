@@ -37,7 +37,7 @@ i32 allocate_block(stackAllocator *allocator, size_t size)
         return frameIndex;
 }
 
-void deallocate(stackAllocator *s)
+void clean_stack(stackAllocator *s)
 {
         size_t i = s->frameCount - 1;
         while (s->frameCount > 0) { 
@@ -53,7 +53,7 @@ void free_block(stackAllocator *s, size_t index)
 {
         if (index >= s->frameCount) return;
         s->allocatedFrames[index].inUse = false;
-        deallocate(s);
+        clean_stack(s);
 }
 
 void free_block_ptr(stackAllocator *s, void *ptr)

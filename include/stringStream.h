@@ -13,5 +13,6 @@ void ssAppend(stringStream *ss, char *string, int len);
 
 void readInFile(stringStream *ss, char *fileName);
 char *readRes(char *filename);
+char *readShader(char *filename, char *type);
 
 #endif

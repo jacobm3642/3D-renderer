@@ -1,5 +1,7 @@
 #include "stringTools.h"
+#include "engine_internal.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 int lengthOfString(char *string)
@@ -16,20 +18,70 @@ int stringToInt(char *string)
 {
         inplaceStripEnds(string);
 
-        int length = lengthOfString(string); 
+        int length = lengthOfString(string);
         int value = 0;
+        int sign = 1;
+        int i = 0;
 
-        for (int i = 0; i < length; i++) {
+        if (string[0] == '-') {
+                sign = -1;
+                i = 1;     
+        } else if (string[0] == '+') {
+                i = 1;    
+        }
+
+        for (; i < length; i++) {
                 if (string[i] < '0' || string[i] > '9') {
-                        value = -1;
-                        break;
+                        return -1;
                 }
-
                 value = value * 10 + (string[i] - '0');
         }
 
-        return value;
+        return sign * value;
 }
+
+float stringToFloat(char *string)
+{
+    inplaceStripEnds(string);
+
+    int length = lengthOfString(string);
+    float value = 0.0f;
+    float sign = 1.0f;
+    int i = 0;
+    int hasFraction = 0;
+    float fractionDivisor = 1.0f;
+
+    // Check for a sign at the beginning of the string
+    if (string[0] == '-') {
+        sign = -1.0f;
+        i = 1; // Start processing digits from the next character
+    } else if (string[0] == '+') {
+        i = 1; // Skip the '+' sign and start processing digits
+    }
+
+    for (; i < length; i++) {
+        if (string[i] >= '0' && string[i] <= '9') {
+            if (hasFraction) {
+                fractionDivisor *= 10.0f;
+                value = value + (string[i] - '0') / fractionDivisor;
+            } else {
+                value = value * 10.0f + (string[i] - '0');
+            }
+        } else if (string[i] == '.') {
+            if (hasFraction) {
+                // Multiple dots are not allowed
+                return -1.0f;
+            }
+            hasFraction = 1;
+        } else {
+            // Invalid character detected, return an error value
+            return -1.0f;
+        }
+    }
+
+    return sign * value;
+}
+
 
 void inplaceStripWhitespace(char *string)
 {
@@ -59,14 +111,20 @@ void inplaceStripEnds(char *string)
         while (end >= 0 && (string[end] == ' ' || string[end] == '\t' || string[end] == '\n')) {
                 end--;
         }
+        
+        if (start == 0 && end == length -1) {
+                return;
+        }
 
         int writeIndex = 0;
         for (int i = start; i <= end; i++) {
                 string[writeIndex] = string[i];
                 writeIndex++;
         }
-
-        string[writeIndex] = '\0';
+        
+        if (writeIndex <= length - 1) {
+                string[writeIndex] = '\0';
+        }
 }
 
 char **splitString(char *string, char separator, int *substringsCount) 
@@ -80,7 +138,7 @@ char **splitString(char *string, char separator, int *substringsCount)
                 }
         }
 
-        char **substrings = (char **)malloc((*substringsCount) * sizeof(char *));
+        char **substrings = (char **)allocate((*substringsCount) * sizeof(char *));
 
         int start = 0;
         int substringIndex = 0;
@@ -89,7 +147,7 @@ char **splitString(char *string, char separator, int *substringsCount)
                 if (string[i] == separator || string[i] == '\0') {
                         int substringLength = i - start;
 
-                        substrings[substringIndex] = (char *)malloc((substringLength + 1) * sizeof(char));
+                        substrings[substringIndex] = (char *)allocate((substringLength + 1) * sizeof(char));
 
                         for (int j = 0; j < substringLength; j++) {
                                 substrings[substringIndex][j] = string[start + j];
@@ -131,9 +189,9 @@ void freeStringArray(char **substrings, int substringsCount)
 
         for (int i = 0; i < substringsCount; i++) {
                 if (substrings[i] != NULL) {
-                        free(substrings[i]);
+                        deallocate(substrings[i]);
                 }
         }
 
-        free(substrings);
+        deallocate(substrings);
 }
