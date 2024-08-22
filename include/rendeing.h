@@ -11,7 +11,8 @@ typedef struct objectManafest {
 } objectManafest;
 
 typedef struct Object {
-        vec2* vertices;
+        vec4 *vertices;
+        float *vertices_f;
         size_t count;
         union {                
                 unsigned int shaderProgram;
@@ -30,3 +31,7 @@ typedef struct Objnode {
 } Objnode;
 
 void startRenderer(WindowState *window);
+void drawVec2Array(Object *obj);
+void drawTriangle_GL(Object *obj);
+Object *parce_manafest(char *name);
+void begin_frame();

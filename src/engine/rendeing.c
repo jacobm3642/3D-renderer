@@ -71,15 +71,14 @@ void parce_line(char *line, Object *obj)
                 }
                 return;
         }
-        if (line[0] == 'v') {
+        if (line[0] == 'v' && line[1] == '2') {
                 int d = 0;
                 char **vertices = splitString(&line[3], ' ', &d);
-
-                vec2 out; 
+                
+                vec4 *out = &obj->vertices[obj->count];
                 if (d == 2) {
-                        out.x = stringToFloat(vertices[0]); 
-                        out.y = stringToFloat(vertices[1]);
-                        obj->vertices[obj->count] = out;
+                        out->x = stringToFloat(vertices[0]); 
+                        out->y = stringToFloat(vertices[1]);
                 }
                 obj->count++;
 
@@ -98,7 +97,7 @@ Object *parce_manafest(char *name)
         for (int i = 0; i < substrings; i++) {
                 parce_line(lines[i], obj);
         }
-        
+
         obj->shader.shaderProgram = attachShader(obj->shader.shaders.vertexShader, obj->shader.shaders.fragmentShader);
 
         return  obj;
@@ -106,46 +105,101 @@ Object *parce_manafest(char *name)
 
 void print_v_c(Object *obj)
 {
-        printf("count %d\n", (int)obj->count);
         for (size_t i = 0; i < obj->count; i++) {
-                printf("%f\n", obj->vertices[i].x);
-                printf("%f\n", obj->vertices[i].y);
+                printf("Vertex %zu: (%f, %f)\n", i, obj->vertices[i].x, obj->vertices[i].y);
         }
 }
 
 //Object *genrate_object(char *vertexShader, char *fragmentShader, vec2 *vertices)
 //{
-        
+
 //}
 
-void drawVec2Array(Object *obj) {
-    unsigned int VAO;
+void drawTriangle_GL(Object *obj)
+{
+    float *vertices = allocate(3 * obj->count);
+    for (size_t i = 0;i < obj->count; i++) {
+            vertices[i*3] = obj->vertices[i].x;
+            vertices[i*3 + 1] = obj->vertices[i].y;
+    }
+    
+    GLuint VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    unsigned int VBO;
+    GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, obj->count * sizeof(vec2), obj->vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec2), (void*)0);
+    glBufferData(GL_ARRAY_BUFFER, obj->count * 3 * sizeof(float), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+
+    glUseProgram(obj->shader.shaderProgram);
+
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    
+    glBindVertexArray(0);
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
+void drawVec2Array(Object *obj) 
+{ 
+    unsigned int VAO, VBO;
+    float *vert = allocate(obj->count * 3 * sizeof(float));
+    
+    if (vert == NULL) {
+        fprintf(stderr, "Failed to allocate memory for vertices.\n");
+        return;
+    }
+
+    for (size_t i = 0; i < obj->count; i++) {
+        vert[i * 3] = obj->vertices[i].x;
+        vert[i * 3 + 1] = obj->vertices[i].y;
+        vert[i * 3 + 2] = 0.0f;
+        printf("Vertex %zu: (%f, %f, %f)\n", i, vert[i * 3], vert[i * 3 + 1], vert[i * 3 + 2]);
+    }
+    
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glBufferData(GL_ARRAY_BUFFER, obj->count * 3 * sizeof(float), vert, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
     glEnableVertexAttribArray(0);
 
     glUseProgram(obj->shader.shaderProgram);
 
-    glDrawArrays(GL_TRIANGLES, 0, obj->count);
+    // Change this line according to what you want to draw
+    glDrawArrays(GL_POINTS, 0, obj->count);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    deallocate(vert);
+}
+
+void begin_frame()
+{
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.5f, 1.0f, 0.0f, 1.0f);
 }
 
 void startRenderer(WindowState *window)
 {
-        glViewport(0, 0, window->width, window->height);
-        glClearColor(0.5f, 1.0f, 0.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        Object *basic = parce_manafest("basic.man");
-        print_v_c(basic);
-        drawVec2Array(basic);
-        SDL_GL_SwapWindow(window->window);
+        printf("%f\n", window->deltaTime);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glCullFace(GL_BACK);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_STENCIL_TEST);
 }

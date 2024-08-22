@@ -3,7 +3,6 @@
 #include "engine.h"
 #include "window.h"
 #include "rendeing.h"
-
 #include <stdio.h>
 
 extern stackAllocator mainMem;
@@ -29,14 +28,24 @@ void mainLoop(WindowState *windowState)
         u32 preTicks = SDL_GetTicks();
         u32 curTicks = 0;
 
+        startRenderer(windowState);
+
+        Object *obj = parce_manafest("basic.man");
+
         while (windowState->running) {
                 curTicks = SDL_GetTicks();
-                windowState->deltaTime = (curTicks - preTicks)/ 20.0f;
+                windowState->deltaTime = (curTicks - preTicks)/ 1000.0f;
                 windowState->totalTime += windowState->deltaTime;
                 preTicks = curTicks;
                 dt = windowState->deltaTime;
                 acumulator += dt;
                 if (acumulator >= target) {
+
+                        begin_frame();
+                        
+      //drawVec2Array(obj); 
+                        drawTriangle_GL(obj);
+                        SDL_GL_SwapWindow(windowState->window);
 
                         acumulator -= 1;
                 }
@@ -51,6 +60,5 @@ void mainLoop(WindowState *windowState)
 void engineMain()
 {
         WindowState *window = WindowInit();
-        startRenderer(window);
         mainLoop(window);
 }
