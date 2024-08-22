@@ -31,7 +31,6 @@ typedef struct Objnode {
 } Objnode;
 
 void startRenderer(WindowState *window);
-void drawVec2Array(Object *obj);
-void drawTriangle_GL(Object *obj);
+void draw_triangle_mesh_GL(Object *obj);
 Object *parce_manafest(char *name);
 void begin_frame();

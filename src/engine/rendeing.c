@@ -57,6 +57,26 @@ GLuint attachShader(GLuint vertexShader, GLuint fragmentShader)
         return shaderProgram;
 }
 
+void parce_vert_line(char *line, Object *obj)
+{ 
+        int d = 0;
+        char **vertices = splitString(&line[3], ' ', &d);
+
+        vec4 *out = &obj->vertices[obj->count];
+
+        switch (line[1]) {
+
+                case '4':
+                        out->w = stringToFloat(vertices[3]);
+                case '3':
+                        out->z = stringToFloat(vertices[2]);
+                case '2':
+                        out->y = stringToFloat(vertices[1]);
+                        out->x = stringToFloat(vertices[0]); 
+        }
+        obj->count++;
+}
+
 void parce_line(char *line, Object *obj)
 {
         if (line[0] == '\n') {
@@ -71,29 +91,33 @@ void parce_line(char *line, Object *obj)
                 }
                 return;
         }
-        if (line[0] == 'v' && line[1] == '2') {
-                int d = 0;
-                char **vertices = splitString(&line[3], ' ', &d);
-                
-                vec4 *out = &obj->vertices[obj->count];
-                if (d == 2) {
-                        out->x = stringToFloat(vertices[0]); 
-                        out->y = stringToFloat(vertices[1]);
-                }
-                obj->count++;
-
+        if (line[0] == 'v') {
+                parce_vert_line(line, obj);
                 return;
         }
 
 }
 
+size_t vert_count(char **man_file, int line_count)
+{
+      int v_count = 0;
+      for (int i = 0; i < line_count; i++) {
+              char *line = man_file[i];
+              if (line[0] == 'v'){
+                      v_count++;
+              }
+      }
+      return v_count;
+}
+
 Object *parce_manafest(char *name)
 {
         Object *obj = allocate(sizeof(Object));
-        obj->vertices = allocate(sizeof(vec2) * 3);
         char *contence = readRes(name);
         int substrings = 0;
-        char **lines = splitString(contence, '\n', &substrings);
+        char **lines = splitString(contence, '\n', &substrings); 
+        size_t v_count = vert_count(lines, substrings);
+        obj->vertices = allocate(sizeof(vec4) * v_count);
         for (int i = 0; i < substrings; i++) {
                 parce_line(lines[i], obj);
         }
@@ -115,77 +139,45 @@ void print_v_c(Object *obj)
 
 //}
 
-void drawTriangle_GL(Object *obj)
+void draw_triangle_mesh_GL(Object *obj)
 {
-    float *vertices = allocate(3 * obj->count);
-    for (size_t i = 0;i < obj->count; i++) {
-            vertices[i*3] = obj->vertices[i].x;
-            vertices[i*3 + 1] = obj->vertices[i].y;
-    }
-    
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+        float *vertices = allocate(sizeof(float) * 3 * obj->count);
+        for (size_t i = 0;i < obj->count; i++) {
+                vertices[i*3] = obj->vertices[i].x;
+                vertices[i*3 + 1] = obj->vertices[i].y;
+                vertices[i*3 + 2] = obj->vertices[i].z;
+        }
 
-    GLuint VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        GLuint VAO;
+        glGenVertexArrays(1, &VAO);
+        glBindVertexArray(VAO);
 
-    glBufferData(GL_ARRAY_BUFFER, obj->count * 3 * sizeof(float), vertices, GL_STATIC_DRAW);
+        GLuint VBO;
+        glGenBuffers(1, &VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
+        glBufferData(GL_ARRAY_BUFFER, obj->count * 3 * sizeof(float), vertices, GL_STATIC_DRAW);
 
-    glBindVertexArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(0);
 
-    glUseProgram(obj->shader.shaderProgram);
+        glBindVertexArray(0);
 
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    
-    glBindVertexArray(0);
+        glUseProgram(obj->shader.shaderProgram);
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-}
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, obj->count);
 
-void drawVec2Array(Object *obj) 
-{ 
-    unsigned int VAO, VBO;
-    float *vert = allocate(obj->count * 3 * sizeof(float));
-    
-    if (vert == NULL) {
-        fprintf(stderr, "Failed to allocate memory for vertices.\n");
-        return;
-    }
+        glBindVertexArray(0);
 
-    for (size_t i = 0; i < obj->count; i++) {
-        vert[i * 3] = obj->vertices[i].x;
-        vert[i * 3 + 1] = obj->vertices[i].y;
-        vert[i * 3 + 2] = 0.0f;
-        printf("Vertex %zu: (%f, %f, %f)\n", i, vert[i * 3], vert[i * 3 + 1], vert[i * 3 + 2]);
-    }
-    
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
 
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    glBufferData(GL_ARRAY_BUFFER, obj->count * 3 * sizeof(float), vert, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glUseProgram(obj->shader.shaderProgram);
-
-    // Change this line according to what you want to draw
-    glDrawArrays(GL_POINTS, 0, obj->count);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    deallocate(vert);
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+                printf("OpenGL Error: %d\n", err);
+        }
+        deallocate(vertices);
 }
 
 void begin_frame()

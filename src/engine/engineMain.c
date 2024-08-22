@@ -41,15 +41,13 @@ void mainLoop(WindowState *windowState)
                 acumulator += dt;
                 if (acumulator >= target) {
 
-                        begin_frame();
-                        
-      //drawVec2Array(obj); 
-                        drawTriangle_GL(obj);
-                        SDL_GL_SwapWindow(windowState->window);
-
                         acumulator -= 1;
                 }
-                
+
+                begin_frame();
+
+                draw_triangle_mesh_GL(obj);
+                SDL_GL_SwapWindow(windowState->window);
 
                 handleEvent(windowState);
 
