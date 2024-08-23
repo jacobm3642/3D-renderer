@@ -1,5 +1,6 @@
 #include "stackallocator.h"
 #include "dataTypes.h"
+#include "errors.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,10 +20,16 @@ i32 allocate_block(stackAllocator *allocator, size_t size)
 {
         if (allocator->offset + size > allocator->size) {
                 printf("\x1b[31m Warning: \x1b[0m stackallocator size exceeded\n");
+#ifndef DEBUG
+                FATAL_ERROR("memerror", out_of_memory);
+#endif
                 return -1;
         };
         if (allocator->frameCount == allocator->maxFrames) { 
                 printf("\x1b[31m Warning: \x1b[0m stackallocator Frames stack size exceeded\n");
+#ifndef DEBUG
+                FATAL_ERROR("memerror", out_of_memory);
+#endif
                 return -1;
         };
 

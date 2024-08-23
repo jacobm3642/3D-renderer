@@ -13,7 +13,9 @@ typedef struct objectManafest {
 typedef struct Object {
         vec4 *vertices;
         float *vertices_f;
+        u8 *indices;
         size_t count;
+        i32 index_count;
         union {                
                 unsigned int shaderProgram;
                 struct {

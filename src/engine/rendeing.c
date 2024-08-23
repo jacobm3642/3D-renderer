@@ -2,6 +2,7 @@
 #include "dataTypes.h"
 #include "engine.h"
 #include "engine_internal.h"
+#include "errors.h"
 #include "stringTools.h"
 #include "window.h"
 #include "stringStream.h"
@@ -77,6 +78,20 @@ void parce_vert_line(char *line, Object *obj)
         obj->count++;
 }
 
+void parce_indices_line(char *line, Object *obj)
+{ 
+        int d = 0;
+        char **indices = splitString(&line[2], ' ', &d);
+        if (obj->indices != NULL) {
+                FATAL_ERROR("There can only be one indices line in the manafest\n", incorrect_input);
+        }
+        obj->indices = allocate(sizeof(u8) * d);
+        for (int i = 0; i < d; i++) {
+                obj->indices[i] = stringToUChar(indices[i]);
+        }
+        obj->index_count = d;
+}
+
 void parce_line(char *line, Object *obj)
 {
         if (line[0] == '\n') {
@@ -94,6 +109,9 @@ void parce_line(char *line, Object *obj)
         if (line[0] == 'v') {
                 parce_vert_line(line, obj);
                 return;
+        }
+        if (line[0] == 'i') {
+                parce_indices_line(line, obj);
         }
 
 }
@@ -160,14 +178,24 @@ void draw_triangle_mesh_GL(Object *obj)
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(0);
-
-        glBindVertexArray(0);
-
+        
         glUseProgram(obj->shader.shaderProgram);
-
+        
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, obj->count);
 
+        if (obj->indices != NULL) {        
+                GLuint IBO;
+                glGenBuffers(1, &IBO);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, obj->index_count * sizeof(u8), obj->indices, GL_STATIC_DRAW);
+                glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_BYTE, (GLvoid*)0);
+
+                //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                glDeleteBuffers(1, &IBO);
+        } else {
+                printf("w");
+                glDrawArrays(GL_TRIANGLES, 0, obj->count);
+        }
         glBindVertexArray(0);
 
         glDeleteVertexArrays(1, &VAO);

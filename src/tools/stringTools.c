@@ -40,6 +40,25 @@ int stringToInt(char *string)
         return sign * value;
 }
 
+u8 stringToUChar(char *string)
+{
+        inplaceStripEnds(string);
+
+        int length = lengthOfString(string);
+        u8 value = 0;
+        int i = 0;
+
+
+        for (; i < length; i++) {
+                if (string[i] < '0' || string[i] > '9') {
+                        return -1;
+                }
+                value = value * 10 + (string[i] - '0');
+        }
+
+        return value;
+}
+
 float stringToFloat(char *string)
 {
     inplaceStripEnds(string);
