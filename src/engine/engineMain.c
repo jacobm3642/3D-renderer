@@ -1,11 +1,8 @@
 #include "dataTypes.h"
-#include "stackallocator.h"
 #include "engine.h"
 #include "window.h"
 #include "rendeing.h"
 #include <stdio.h>
-
-extern stackAllocator mainMem;
 
 void handleEvent(WindowState *windowState) 
 {        
@@ -46,11 +43,15 @@ void mainLoop(WindowState *windowState)
 
                 begin_frame();
 
-                draw_triangle_mesh_GL(obj);
+                draw_triangle_mesh_GL(obj, windowState);
                 SDL_GL_SwapWindow(windowState->window);
 
                 handleEvent(windowState);
-
+                
+                GLenum error = glGetError();
+                if(error != GL_NO_ERROR) {
+                        printf("OpenGL error: %d\n", error);
+                }
         }
         printf("main loop exited at %f second elapsed\n", windowState->totalTime);
 }

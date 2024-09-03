@@ -6,6 +6,7 @@
 #include "stringTools.h"
 #include "window.h"
 #include "stringStream.h"
+#include "rendeing_math.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -141,7 +142,11 @@ Object *parce_manafest(char *name)
         }
 
         obj->shader.shaderProgram = attachShader(obj->shader.shaders.vertexShader, obj->shader.shaders.fragmentShader);
-
+        GLuint transformLoc = glGetUniformLocation(obj->shader.shaderProgram, "transform");
+        obj->transformMat = transformLoc;
+        
+        GLuint scale = glGetUniformLocation(obj->shader.shaderProgram, "scale");
+        obj->scaleMat = scale;
         return  obj;
 }
 
@@ -157,7 +162,21 @@ void print_v_c(Object *obj)
 
 //}
 
-void draw_triangle_mesh_GL(Object *obj)
+void pass_rotation_matrix(vec2 angle, Object *obj)
+{
+        mat4 a;
+        rotation_matrix_x(angle, &a);
+        glUniformMatrix4fv(obj->transformMat, 1, GL_FALSE, (const GLfloat*)a);
+}
+
+void scale_object(float scale, Object *obj)
+{
+        mat4 a;
+        scale_matrix(scale, &a);
+        glUniformMatrix4fv(obj->scaleMat, 1, GL_FALSE, (const GLfloat*)a);
+}
+
+void draw_triangle_mesh_GL(Object *obj, WindowState *window)
 {
         float *vertices = allocate(sizeof(float) * 3 * obj->count);
         for (size_t i = 0;i < obj->count; i++) {
@@ -181,19 +200,22 @@ void draw_triangle_mesh_GL(Object *obj)
         
         glUseProgram(obj->shader.shaderProgram);
         
+        vec2 angle = {window->totalTime, 2};
+        pass_rotation_matrix(angle, obj);
+        scale_object(0.5, obj);
+
         glBindVertexArray(VAO);
 
-        if (obj->indices != NULL) {        
+        if (obj->indices != NULL) {
                 GLuint IBO;
                 glGenBuffers(1, &IBO);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
                 glBufferData(GL_ELEMENT_ARRAY_BUFFER, obj->index_count * sizeof(u8), obj->indices, GL_STATIC_DRAW);
                 glDrawElements(GL_TRIANGLES, obj->index_count, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
-                //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                 glDeleteBuffers(1, &IBO);
         } else {
-                printf("w");
                 glDrawArrays(GL_TRIANGLES, 0, obj->count);
         }
         glBindVertexArray(0);

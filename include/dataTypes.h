@@ -27,6 +27,9 @@
 // 80-bit floating point (x86 long double)
 #define f80 long double
 
+// we need pi for maths
+#define pi 3.141592f
+
 // finely the bools
 typedef enum { false, true } bool;
 
@@ -76,6 +79,8 @@ typedef struct polygon {
         size_t size;
         vec2 *points;
 } polygon;
+
+typedef float mat4[16];
 
 typedef struct matrix {
         i32 r;
