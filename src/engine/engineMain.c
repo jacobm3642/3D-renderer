@@ -25,7 +25,7 @@ void mainLoop(WindowState *windowState)
         u32 preTicks = SDL_GetTicks();
         u32 curTicks = 0;
 
-        startRenderer(windowState);
+        startRenderer();
 
         Object *obj = parce_manafest("basic.man");
 
@@ -38,7 +38,7 @@ void mainLoop(WindowState *windowState)
                 acumulator += dt;
                 if (acumulator >= target) {
 
-                        acumulator -= 1;
+                        acumulator -= target;
                 }
 
                 begin_frame();

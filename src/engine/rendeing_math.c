@@ -54,6 +54,17 @@ mat4 *scale_matrix(float scale, mat4 *out)
         return out;
 }
 
+// not correct
+mat4 *traslation_matrix(vec3 pos, mat4 *out)
+{ 
+        (*out)[0] = 0.0f;      (*out)[1] = 0.0f;       (*out)[2] = 0.0f;   (*out)[3] = pos.x;
+        (*out)[4] = 0.0f;       (*out)[5] = .0f;      (*out)[6] = 0.0f;   (*out)[7] = pos.y;
+        (*out)[8] = 0.0f;       (*out)[9] = 0.0f;       (*out)[10] = 0.0f; (*out)[11] = pos.z;
+        (*out)[12] = 0.0f;      (*out)[13] = 0.0f;      (*out)[14] = 0.0f;  (*out)[15] = 0.0f;
+        
+        return out;
+}
+
 mat4* matrix_multiply(mat4 *a, mat4 *b, mat4 *out)
 {
         mat4 temp;

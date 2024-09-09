@@ -2,6 +2,7 @@
 #include "errors.h"
 #include "stackallocator.h"
 #include "engine.h"
+#include "stringTools.h"
 
 #include <setjmp.h>
 
@@ -15,7 +16,6 @@ jmp_buf fatal_error;
 int main()
 {
         init_allocator(&mainMem, 1000000);
-        allocate_block(&mainMem, 100); // for env vars
 #ifdef test 
         runTests();
 #endif

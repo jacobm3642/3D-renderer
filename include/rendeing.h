@@ -18,6 +18,7 @@ typedef struct Object {
         i32 index_count;
         GLuint transformMat;
         GLuint scaleMat;
+        GLuint posMat;
         union {                
                 unsigned int shaderProgram;
                 struct {
@@ -34,7 +35,7 @@ typedef struct Objnode {
         struct Objnode *right;
 } Objnode;
 
-void startRenderer(WindowState *window);
+void startRenderer();
 void draw_triangle_mesh_GL(Object *obj, WindowState *window);
 Object *parce_manafest(char *name);
 void begin_frame();

@@ -147,6 +147,8 @@ Object *parce_manafest(char *name)
         
         GLuint scale = glGetUniformLocation(obj->shader.shaderProgram, "scale");
         obj->scaleMat = scale;
+        GLuint pos = glGetUniformLocation(obj->shader.shaderProgram, "pos");
+        obj->posMat = pos;
         return  obj;
 }
 
@@ -164,8 +166,10 @@ void print_v_c(Object *obj)
 
 void pass_rotation_matrix(vec2 angle, Object *obj)
 {
-        mat4 a;
+        mat4 a, b;
         rotation_matrix_x(angle, &a);
+        rotation_matrix_y(angle, &b);
+        matrix_multiply(&a, &b, &a);
         glUniformMatrix4fv(obj->transformMat, 1, GL_FALSE, (const GLfloat*)a);
 }
 
@@ -174,6 +178,13 @@ void scale_object(float scale, Object *obj)
         mat4 a;
         scale_matrix(scale, &a);
         glUniformMatrix4fv(obj->scaleMat, 1, GL_FALSE, (const GLfloat*)a);
+}
+
+void move_object(vec3 pos, Object *obj)
+{
+        mat4 a;
+        traslation_matrix(pos, &a);
+        glUniformMatrix4fv(obj->posMat, 1, GL_FALSE, (const GLfloat*)a);
 }
 
 void draw_triangle_mesh_GL(Object *obj, WindowState *window)
@@ -201,8 +212,10 @@ void draw_triangle_mesh_GL(Object *obj, WindowState *window)
         glUseProgram(obj->shader.shaderProgram);
         
         vec2 angle = {window->totalTime, 2};
+        vec3 pos = {0.5, 0.5, 0.0};
         pass_rotation_matrix(angle, obj);
         scale_object(0.5, obj);
+        move_object(pos, obj);
 
         glBindVertexArray(VAO);
 
@@ -236,9 +249,8 @@ void begin_frame()
         glClearColor(0.5f, 1.0f, 0.0f, 1.0f);
 }
 
-void startRenderer(WindowState *window)
+void startRenderer()
 {
-        printf("%f\n", window->deltaTime);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glCullFace(GL_BACK);
         glEnable(GL_CULL_FACE);
