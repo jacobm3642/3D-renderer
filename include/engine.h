@@ -8,4 +8,8 @@
 #include <GL/glew.h>
 #include <GL/glu.h>
 
+#ifndef FRAME_LIMITED
+#define FRAME_LIMITED false
+#endif 
+
 void engineMain();

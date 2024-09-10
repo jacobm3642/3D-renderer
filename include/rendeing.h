@@ -11,22 +11,23 @@ typedef struct objectManafest {
 } objectManafest;
 
 typedef struct Object {
-        vec4 *vertices;
-        float *vertices_f;
-        u8 *indices;
-        size_t count;
-        i32 index_count;
+        u16 count;
+        u16 index_count;
+        f32 scale;
         GLuint transformMat;
         GLuint scaleMat;
         GLuint posMat;
+        vec3 pos;
         union {                
-                unsigned int shaderProgram;
+                u32 shaderProgram;
                 struct {
-                        unsigned int vertexShader;
-                        unsigned int fragmentShader;
+                        u32 vertexShader;
+                        u32 fragmentShader;
                 } shaders;
         } shader;
-
+        vec4 *vertices;
+        u8 *indices;
+        Rotation rotation;
 } Object;
 
 typedef struct Objnode {
@@ -36,6 +37,6 @@ typedef struct Objnode {
 } Objnode;
 
 void startRenderer();
-void draw_triangle_mesh_GL(Object *obj, WindowState *window);
+void draw_triangle_mesh_GL(Object *obj);
 Object *parce_manafest(char *name);
 void begin_frame();

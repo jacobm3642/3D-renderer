@@ -1,4 +1,5 @@
-#! /bin/bash
+#!/bin/bash
+
 project_dirctory=$(pwd)
 files=$(find $project_dirctory/src -not -path "$project_directory/src/test*" -name '*.c' -type f -printf "%p\n" | grep -v '/test/')  
 uni_flags="-m64 -I./include/ -lm -lSDL2 -lGL -lGLEW -Wno-error=implicit-fallthrough -Wno-implicit-fallthrough" 
@@ -32,7 +33,7 @@ while getopts ":rdtv" opt; do
       ;;
     r)
       echo "Building Realise ....." >&2
-      build_flags="$files -O3 -s -o ./build/realise/main $uni_flags"
+      build_flags="$files -D FRAME_LIMITED=true -O3 -s -o ./build/realise/main $uni_flags"
       run_path=./build/realise
       ;;
     d)

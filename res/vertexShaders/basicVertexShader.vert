@@ -7,5 +7,5 @@ uniform mat4 pos;
 
 void main()
 {
-        gl_Position = transform * scale * vec4(aPos.x, aPos.y, aPos.z, 1.0f);
+        gl_Position = transform * scale * vec4(aPos.x, aPos.y, aPos.z, 1.0f) * pos;
 }

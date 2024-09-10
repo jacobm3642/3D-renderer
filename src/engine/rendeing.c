@@ -149,6 +149,12 @@ Object *parce_manafest(char *name)
         obj->scaleMat = scale;
         GLuint pos = glGetUniformLocation(obj->shader.shaderProgram, "pos");
         obj->posMat = pos;
+        obj->scale = 1.0f;
+        vec3 posVal = {0.0, 0.0, 0.0};
+        obj->pos = posVal;
+        Rotation ro = {.x = {1, 1}, .y = {1, 1}, .z = {1, 1}};
+        obj->rotation = ro;
+
         return  obj;
 }
 
@@ -164,11 +170,13 @@ void print_v_c(Object *obj)
 
 //}
 
-void pass_rotation_matrix(vec2 angle, Object *obj)
+void pass_rotation_matrix(Rotation angle, Object *obj)
 {
         mat4 a, b;
-        rotation_matrix_x(angle, &a);
-        rotation_matrix_y(angle, &b);
+        rotation_matrix_x(angle.x, &a);
+        rotation_matrix_y(angle.y, &b);
+        matrix_multiply(&a, &b, &a);
+        rotation_matrix_z(angle.z, &b);
         matrix_multiply(&a, &b, &a);
         glUniformMatrix4fv(obj->transformMat, 1, GL_FALSE, (const GLfloat*)a);
 }
@@ -187,7 +195,7 @@ void move_object(vec3 pos, Object *obj)
         glUniformMatrix4fv(obj->posMat, 1, GL_FALSE, (const GLfloat*)a);
 }
 
-void draw_triangle_mesh_GL(Object *obj, WindowState *window)
+void draw_triangle_mesh_GL(Object *obj)
 {
         float *vertices = allocate(sizeof(float) * 3 * obj->count);
         for (size_t i = 0;i < obj->count; i++) {
@@ -211,11 +219,9 @@ void draw_triangle_mesh_GL(Object *obj, WindowState *window)
         
         glUseProgram(obj->shader.shaderProgram);
         
-        vec2 angle = {window->totalTime, 2};
-        vec3 pos = {0.5, 0.5, 0.0};
-        pass_rotation_matrix(angle, obj);
-        scale_object(0.5, obj);
-        move_object(pos, obj);
+        pass_rotation_matrix(obj->rotation, obj);
+        scale_object(obj->scale, obj);
+        move_object(obj->pos, obj);
 
         glBindVertexArray(VAO);
 

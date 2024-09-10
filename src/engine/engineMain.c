@@ -19,12 +19,14 @@ void handleEvent(WindowState *windowState)
 
 void mainLoop(WindowState *windowState)
 {
-        f32 acumulator = 0;
+        f32 secondAcumulator = 0;
         f32 target = 1;
+        f32 frameAcumulator = 0;
+        f32 frameTarget = 0.008;
         f32 dt = 0;
         u32 preTicks = SDL_GetTicks();
         u32 curTicks = 0;
-
+        u32 fps = 0;
         startRenderer();
 
         Object *obj = parce_manafest("basic.man");
@@ -35,19 +37,26 @@ void mainLoop(WindowState *windowState)
                 windowState->totalTime += windowState->deltaTime;
                 preTicks = curTicks;
                 dt = windowState->deltaTime;
-                acumulator += dt;
-                if (acumulator >= target) {
-
-                        acumulator -= target;
+                secondAcumulator += dt;
+                frameAcumulator += dt;
+                if (secondAcumulator >= target) {
+                        printf("FPS: %d\n", fps);
+                        fps = 0;
+                        secondAcumulator -= target;
                 }
 
-                begin_frame();
+                if (frameAcumulator >= frameTarget || !FRAME_LIMITED) {
 
-                draw_triangle_mesh_GL(obj, windowState);
-                SDL_GL_SwapWindow(windowState->window);
+                        begin_frame();
+
+                        draw_triangle_mesh_GL(obj);
+                        SDL_GL_SwapWindow(windowState->window);
+                        fps++;
+
+                        frameAcumulator -= frameTarget;
+                }
 
                 handleEvent(windowState);
-                
                 GLenum error = glGetError();
                 if(error != GL_NO_ERROR) {
                         printf("OpenGL error: %d\n", error);

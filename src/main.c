@@ -3,6 +3,7 @@
 #include "stackallocator.h"
 #include "engine.h"
 #include "stringTools.h"
+#include "rendeing.h"
 
 #include <setjmp.h>
 
@@ -16,6 +17,7 @@ jmp_buf fatal_error;
 int main()
 {
         init_allocator(&mainMem, 1000000);
+        printf("%zu\n", sizeof(Object));
 #ifdef test 
         runTests();
 #endif
