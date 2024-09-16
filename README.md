@@ -27,7 +27,7 @@
  - [ ] Lisp embeding for scripting
  - [ ] state snapshot system
 
-### smailer
+### smailler
  - [ ] a min heap for object rendering (distance from camera)
  - [ ] a cache system for commonly used Objects
  - [ ] more sane default uniforms for shaders
