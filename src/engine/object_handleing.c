@@ -2,11 +2,11 @@
 #include "object_handleing.h"
 #include "engine_internal.h"
 #include "rendeing.h"
-#include "error.h"
+#include "errors.h"
 
 Objnode *root()
 {
-        retrive_ptr(0); // the frame a 0 is allways the root it is allocated in engineMain
+        return retrive_ptr(0); // the frame a 0 is allways the root it is allocated in engineMain
 }
 
 Objnode *next_node(Objnode *n)
@@ -24,9 +24,9 @@ Objnode *new_objnode()
         return allocate(sizeof(Objnode));
 }
 
-Objnode prev_node(Objnode *root_node; Objnode *n)
+Objnode *prev_node(Objnode *root_node, Objnode *n)
 {
-        Objnode w = root_node;
+        Objnode *w = root_node;
         if (n == w) {
                 return n;
         }
@@ -49,6 +49,7 @@ void recer_free(Objnode *n)
         if (n->left != (void *)0){
                 recer_free(n->left);
         }
+        free_object(n->obj);
         deallocate(n);
 }
 
@@ -61,10 +62,11 @@ void free_objnode(Objnode *n)
                 Objnode *p_node = prev_node(root(), n);
                 p_node->right = next_node(n);
         }
-        if (sub_node(n) != (void *0))
+        if (sub_node(n) != (void *)0)
         {
                 recer_free(sub_node(n));
         }
+        free_object(n->obj);
         deallocate(n);
 
 }
@@ -88,13 +90,13 @@ void add_sub_node(Objnode *node, Objnode *new_node)
         if (node == root()) {
                 FATAL_ERROR("the root obj cant have sub_objects", illegal_operation);
         }
-        Objnode sub_root = sub_node(node);
+        Objnode *sub_root = sub_node(node);
         add_node(sub_root, new_node);
 }
 
-Objnode tail_node(Objnode *root_node)
+Objnode *tail_node(Objnode *root_node)
 {
-        w = root_node;
+        Objnode *w = root_node;
         while (true) {
                 if (next_node(w) == (void *)0) {
                         return w;
@@ -110,4 +112,10 @@ void add_object(Object *obj)
         n_objnode->obj = obj;
         t_node->right = n_objnode;
         
+}
+
+void add_man(char *path)
+{
+        Object *new_obj = parce_manafest(path);
+        add_object(new_obj);
 }

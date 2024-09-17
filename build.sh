@@ -40,7 +40,7 @@ while getopts ":rdtv" opt; do
       echo "Building Debug ....." >&2
       build_flags="$files -g -Wextra -Wall -Werror -o ./build/debug/main $uni_flags"
       run_path=./build/debug
-      bear -- gcc $build_flags
+      #bear -- gcc $build_flags
       ;;
     v)
       valgrind="T"

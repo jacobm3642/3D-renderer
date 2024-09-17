@@ -158,6 +158,13 @@ Object *parce_manafest(char *name)
         return  obj;
 }
 
+void free_object(Object *obj)
+{
+        deallocate(obj->vertices);
+        deallocate(obj->indices);
+        deallocate(obj);
+}
+
 void print_v_c(Object *obj)
 {
         for (size_t i = 0; i < obj->count; i++) {

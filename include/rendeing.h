@@ -34,3 +34,4 @@ void startRenderer();
 void draw_triangle_mesh_GL(Object *obj);
 Object *parce_manafest(char *name);
 void begin_frame();
+void free_object(Object *obj);
