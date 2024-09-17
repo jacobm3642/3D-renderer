@@ -152,7 +152,7 @@ Object *parce_manafest(char *name)
         obj->scale = 1.0f;
         vec3 posVal = {0.0, 0.0, 0.0};
         obj->pos = posVal;
-        Rotation ro = {.x = {1, 1}, .y = {1, 1}, .z = {1, 1}};
+        Rotation ro = {.x = 3.1415, .y = 3.1415, .z = 3.1415};
         obj->rotation = ro;
 
         return  obj;

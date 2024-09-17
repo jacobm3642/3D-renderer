@@ -57,9 +57,9 @@ typedef struct vec4 {
 } vec4;
 
 typedef struct Rotation {
-        vec2 x;
-        vec2 y;
-        vec2 z;
+        float x;
+        float y;
+        float z;
 } Rotation;
 
 typedef union homogeneousVec2 {

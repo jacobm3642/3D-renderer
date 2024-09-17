@@ -6,7 +6,8 @@ typedef enum error_type {
         unknown_error,
         out_of_memory,
         failed_to_start,
-        incorrect_input
+        incorrect_input,
+        illegal_operation
 } error_type;
 
 typedef struct error_frame {

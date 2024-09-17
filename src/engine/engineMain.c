@@ -2,7 +2,10 @@
 #include "engine.h"
 #include "window.h"
 #include "rendeing.h"
+
 #include <stdio.h>
+
+#include "engine_internal.h"
 
 void handleEvent(WindowState *windowState) 
 {        
@@ -67,6 +70,10 @@ void mainLoop(WindowState *windowState)
 
 void engineMain()
 {
+        allocate(sizeof(Object));
+        print_allocator(get_stack_ptr());
+        print_frameData(get_stack_ptr(), 0);
+        
         WindowState *window = WindowInit();
         mainLoop(window);
 }

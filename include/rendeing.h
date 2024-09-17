@@ -30,12 +30,6 @@ typedef struct Object {
         Rotation rotation;
 } Object;
 
-typedef struct Objnode {
-        Object *obj;
-        struct Objnode *left;
-        struct Objnode *right;
-} Objnode;
-
 void startRenderer();
 void draw_triangle_mesh_GL(Object *obj);
 Object *parce_manafest(char *name);

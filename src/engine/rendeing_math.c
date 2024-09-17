@@ -2,9 +2,9 @@
 
 #include <math.h>
 
-mat4 *rotation_matrix_x(vec2 angle, mat4 *out) 
+mat4 *rotation_matrix_x(float angle, mat4 *out) 
 {
-        float theta = (angle.x * M_PI) / angle.y;
+        float theta = angle;
         float cos_theta = cos(theta);
         float sin_theta = sin(theta);
 
@@ -16,9 +16,9 @@ mat4 *rotation_matrix_x(vec2 angle, mat4 *out)
         return out;
 }
 
-mat4 *rotation_matrix_y(vec2 angle, mat4 *out) 
+mat4 *rotation_matrix_y(float angle, mat4 *out) 
 {
-        float theta = (angle.x * M_PI) / angle.y;
+        float theta = angle;
         float cos_theta = cos(theta);
         float sin_theta = sin(theta);
 
@@ -30,9 +30,9 @@ mat4 *rotation_matrix_y(vec2 angle, mat4 *out)
         return out;
 }
 
-mat4 *rotation_matrix_z(vec2 angle, mat4 *out) 
+mat4 *rotation_matrix_z(float angle, mat4 *out) 
 {
-        float theta = (angle.x * M_PI) / angle.y;
+        float theta = angle;
         float cos_theta = cos(theta);
         float sin_theta = sin(theta);
 
