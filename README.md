@@ -26,6 +26,7 @@
  - [ ] a new build system (that is cross platform)
  - [ ] Lisp embeding for scripting
  - [ ] state snapshot system
+ - [ ] write a how to use guide
 
 ### smailler
  - [ ] a min heap for object rendering (distance from camera)
