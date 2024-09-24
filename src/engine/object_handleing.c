@@ -105,17 +105,36 @@ Objnode *tail_node(Objnode *root_node)
         }
 }
 
-void add_object(Object *obj)
+Objnode *add_object(Object *obj)
 {
         Objnode *t_node = tail_node(root());
         Objnode *n_objnode = new_objnode();
         n_objnode->obj = obj;
         t_node->right = n_objnode;
+        return  n_objnode;
         
 }
 
-void add_man(char *path)
+Objnode *add_man(char *path)
 {
         Object *new_obj = parce_manafest(path);
-        add_object(new_obj);
+        return add_object(new_obj);
+}
+
+void render_tree(Objnode *n)
+{
+        if (n->left != (void *)0) {
+                render_tree(sub_node(n));
+        }
+        if (n->right != (void *)0) {
+                render_tree(next_node(n));
+        }
+        if (n->obj != (void *)0) {
+                draw_triangle_mesh_GL(n->obj);
+        }
+}
+
+void render_all()
+{
+        render_tree(root());
 }

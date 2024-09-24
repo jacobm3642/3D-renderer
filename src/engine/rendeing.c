@@ -142,18 +142,39 @@ Object *parce_manafest(char *name)
         }
 
         obj->shader.shaderProgram = attachShader(obj->shader.shaders.vertexShader, obj->shader.shaders.fragmentShader);
+        
+        obj->raw_vert = allocate(sizeof(float) * 3 * obj->count);
+        for (size_t i = 0;i < obj->count; i++) {
+                obj->raw_vert[i*3] = obj->vertices[i].x;
+                obj->raw_vert[i*3 + 1] = obj->vertices[i].y;
+                obj->raw_vert[i*3 + 2] = obj->vertices[i].z;
+        }
+
+        deallocate(obj->vertices);
+
+
+        GLuint colorint = glGetUniformLocation(obj->shader.shaderProgram, "color");
+        obj->color_loc = colorint;
+
         GLuint transformLoc = glGetUniformLocation(obj->shader.shaderProgram, "transform");
         obj->transformMat = transformLoc;
-        
+         
         GLuint scale = glGetUniformLocation(obj->shader.shaderProgram, "scale");
         obj->scaleMat = scale;
+
         GLuint pos = glGetUniformLocation(obj->shader.shaderProgram, "pos");
         obj->posMat = pos;
+        
         obj->scale = 1.0f;
+        
         vec3 posVal = {0.0, 0.0, 0.0};
         obj->pos = posVal;
+        
         Rotation ro = {.x = 3.1415, .y = 3.1415, .z = 3.1415};
         obj->rotation = ro;
+
+        vec4 colorval = {0, 0, 0, 1};
+        obj->color = colorval;
 
         return  obj;
 }
@@ -177,40 +198,67 @@ void print_v_c(Object *obj)
 
 //}
 
+bool angle_check(Rotation a, Rotation b)
+{
+        if (a.x == b.x && a.y == b.y && a.z == b.z) {
+                return true;
+        }
+        return false;
+}
+
+bool pos_check(vec3 a, vec3 b)
+{
+        if (a.x == b.x && a.y == b.y && a.z == b.z) {
+                return true;
+        }
+        return false;
+}
+
+void color(vec4 color, Object *obj) 
+{
+        glUniform4f(obj->color_loc, color.x, color.y, color.z, color.w);
+}
+
 void pass_rotation_matrix(Rotation angle, Object *obj)
 {
-        mat4 a, b;
-        rotation_matrix_x(angle.x, &a);
-        rotation_matrix_y(angle.y, &b);
-        matrix_multiply(&a, &b, &a);
-        rotation_matrix_z(angle.z, &b);
-        matrix_multiply(&a, &b, &a);
+        static Rotation last_angle;
+        static mat4 a;
+        if (angle_check(angle, last_angle) || true) {
+                last_angle = angle;
+                mat4 b;
+                rotation_matrix_x(angle.x, &a);
+                rotation_matrix_y(angle.y, &b);
+                matrix_multiply(&a, &b, &a);
+                rotation_matrix_z(angle.z, &b);
+                matrix_multiply(&a, &b, &a);
+        }
         glUniformMatrix4fv(obj->transformMat, 1, GL_FALSE, (const GLfloat*)a);
 }
 
 void scale_object(float scale, Object *obj)
 {
-        mat4 a;
-        scale_matrix(scale, &a);
+        static float last_scale;
+        static mat4 a;
+        if (!(scale == last_scale) || true) {
+                last_scale = scale;
+                scale_matrix(scale, &a);
+        }
         glUniformMatrix4fv(obj->scaleMat, 1, GL_FALSE, (const GLfloat*)a);
 }
 
 void move_object(vec3 pos, Object *obj)
 {
-        mat4 a;
-        traslation_matrix(pos, &a);
+        static vec3 last_pos; 
+        static mat4 a;
+        if (!pos_check(pos, last_pos) || true) {
+                last_pos = pos;
+                traslation_matrix(pos, &a);
+        }
         glUniformMatrix4fv(obj->posMat, 1, GL_FALSE, (const GLfloat*)a);
 }
 
 void draw_triangle_mesh_GL(Object *obj)
 {
-        float *vertices = allocate(sizeof(float) * 3 * obj->count);
-        for (size_t i = 0;i < obj->count; i++) {
-                vertices[i*3] = obj->vertices[i].x;
-                vertices[i*3 + 1] = obj->vertices[i].y;
-                vertices[i*3 + 2] = obj->vertices[i].z;
-        }
-
         GLuint VAO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
@@ -219,16 +267,17 @@ void draw_triangle_mesh_GL(Object *obj)
         glGenBuffers(1, &VBO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-        glBufferData(GL_ARRAY_BUFFER, obj->count * 3 * sizeof(float), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, obj->count * 3 * sizeof(float), obj->raw_vert, GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(0);
         
         glUseProgram(obj->shader.shaderProgram);
-        
+
         pass_rotation_matrix(obj->rotation, obj);
         scale_object(obj->scale, obj);
         move_object(obj->pos, obj);
+        color(obj->color, obj);
 
         glBindVertexArray(VAO);
 
@@ -248,12 +297,6 @@ void draw_triangle_mesh_GL(Object *obj)
 
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
-
-        GLenum err;
-        while ((err = glGetError()) != GL_NO_ERROR) {
-                printf("OpenGL Error: %d\n", err);
-        }
-        deallocate(vertices);
 }
 
 void begin_frame()

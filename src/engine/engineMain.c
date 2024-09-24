@@ -2,8 +2,11 @@
 #include "engine.h"
 #include "window.h"
 #include "rendeing.h"
+#include "object_handleing.h"
 
+#include <time.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "engine_internal.h"
 
@@ -31,9 +34,24 @@ void mainLoop(WindowState *windowState)
         u32 curTicks = 0;
         u32 fps = 0;
         startRenderer();
+        int grid_size = 100;
+        int n = 10;
+        vec4 wi = {1, 1, 1, 1};
+        Objnode **grid = allocate(sizeof(intptr_t) * grid_size);
+        for (int i = 0; i < grid_size; i++) {
+                grid[i] = add_man("basic.man");
+                grid[i]->obj->scale = 0.2;
 
-        Object *obj = parce_manafest("basic.man");
+                // Calculate dx and dy
+                float dx = (i % n) * (2.0f / n) - 1.0f + 0.1;
+                float dy = 1.0f - (floor(i / n) * (2.0f / n)) - 0.1;
 
+                vec3 pos = {dx, dy, 0};
+                grid[i]->obj->pos = pos;
+                if (i % 2 == 0) {
+                        grid[i]->obj->color = wi;
+                }
+        }  
         while (windowState->running) {
                 curTicks = SDL_GetTicks();
                 windowState->deltaTime = (curTicks - preTicks)/ 1000.0f;
@@ -52,7 +70,7 @@ void mainLoop(WindowState *windowState)
 
                         begin_frame();
 
-                        draw_triangle_mesh_GL(obj);
+                        render_all();
                         SDL_GL_SwapWindow(windowState->window);
                         fps++;
 
@@ -71,8 +89,6 @@ void mainLoop(WindowState *windowState)
 void engineMain()
 {
         allocate(sizeof(Object));
-        print_allocator(get_stack_ptr());
-        print_frameData(get_stack_ptr(), 0);
         
         WindowState *window = WindowInit();
         mainLoop(window);

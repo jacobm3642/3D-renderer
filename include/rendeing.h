@@ -17,6 +17,7 @@ typedef struct Object {
         GLuint transformMat;
         GLuint scaleMat;
         GLuint posMat;
+        GLuint color_loc;
         vec3 pos;
         union {                
                 u32 shaderProgram;
@@ -25,7 +26,9 @@ typedef struct Object {
                         u32 fragmentShader;
                 } shaders;
         } shader;
+        vec4 color;
         vec4 *vertices;
+        float *raw_vert;
         u8 *indices;
         Rotation rotation;
 } Object;
@@ -35,3 +38,6 @@ void draw_triangle_mesh_GL(Object *obj);
 Object *parce_manafest(char *name);
 void begin_frame();
 void free_object(Object *obj);
+void scale_object(float scale, Object *obj);
+void move_object(vec3 pos, Object *obj);
+void pass_rotation_matrix(Rotation angle, Object *obj);
