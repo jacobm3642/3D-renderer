@@ -3,6 +3,7 @@
 #include "window.h"
 #include "rendeing.h"
 #include "object_handleing.h"
+#include "game_of_life.h"
 
 #include <time.h>
 #include <stdio.h>
@@ -34,9 +35,10 @@ void mainLoop(WindowState *windowState)
         u32 curTicks = 0;
         u32 fps = 0;
         startRenderer();
-        int grid_size = 100;
-        int n = 10;
+        int grid_size = 10000;
+        int n = 100;
         vec4 wi = {1, 1, 1, 1};
+        vec2 size = {n, n};
         Objnode **grid = allocate(sizeof(intptr_t) * grid_size);
         for (int i = 0; i < grid_size; i++) {
                 grid[i] = add_man("basic.man");
@@ -68,6 +70,7 @@ void mainLoop(WindowState *windowState)
 
                 if (frameAcumulator >= frameTarget || !FRAME_LIMITED) {
 
+                        game_of_life(grid, size);
                         begin_frame();
 
                         render_all();

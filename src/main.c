@@ -16,7 +16,7 @@ jmp_buf fatal_error;
 
 int main()
 {
-        init_allocator(&mainMem, 1000000);
+        init_allocator(&mainMem, 100000000);
         printf("%zu\n", sizeof(Object));
 #ifdef test 
         runTests();
