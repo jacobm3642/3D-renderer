@@ -25,10 +25,68 @@ int *init_game_state(Objnode **grid, vec2 size)
         return game_state;
 }
 
-//void update_state(int *game_state, vec2 size)
-//{
-        
-//}
+int check_cell(int *game_state, vec2 size, int i)
+{
+        int count = 0;
+        if (!(i + 1 > size.x * size.y)) {
+                count += game_state[i + 1];
+        }
+        if (i - 1 >= 0) {
+                count += game_state[i-1];
+        }
+        if (i + size.x < size.x * size.y) {
+                count += game_state[i + (int)size.x];
+        }
+        if (i - size.x >= 0) {
+                count += game_state[i - (int)size.x];
+        }
+        if (i + size.x + 1 < size.x * size.y) {
+                count += game_state[i + (int)size.x + 1];
+        }
+        if (i - size.x + 1 >= 0) {
+                count += game_state[i - (int)size.x + 1];
+        }
+        if (i + size.x - 1 < size.x * size.y) {
+                count += game_state[i + (int)size.x - 1];
+        }
+        if (i - size.x - 1 >= 0) {
+                count += game_state[i - (int)size.x - 1];
+        }
+        return count;
+}
+
+void update_state(int *game_state, vec2 size)
+{
+        int kill[1000] = {0};
+        int k = 0;
+        int alive[1000] = {0};
+        int l = 0;
+        for (int i = 0; i < size.x * size.y; i++) {
+                int count = check_cell(game_state, size, i);
+                if (game_state[i] == 1) {
+                        if (count < 2) {
+                                kill[k] = i;
+                                k++;
+                        }
+                        if (count > 3) {
+                                kill[k] = i;
+                                k++;
+                        }
+                } else {
+                        if (count == 3) {
+
+                                alive[l] = game_state[i];
+                                l++;
+                        }
+                }
+        }
+        for (int i = 0; i < k; i++) {
+                game_state[kill[i]] = 0;
+        }
+        for (int i = 0;i < l; i++) {
+                game_state[alive[i]] = 1;
+        }
+}
 
 void write_state(Objnode **grid, int *game_state, vec2 size)
 {
@@ -53,7 +111,7 @@ void game_of_life(Objnode **grid, vec2 size)
                         game_state = init_game_state(grid, size);
                         state = 1;
                         case 1:
-                        //update_state(game_state, size);
+                        update_state(game_state, size);
                         write_state(grid, game_state, size);
                         return;
                         case 2:
