@@ -11,7 +11,7 @@
  - linux support only (the build system needs changing)
  - unstable on wayland (particularly in hyprland)
 
-## limtations
+## self imposed limtations
  - new tools should be avoided unless its unreasonable to DIY it
  - C is the only language that can be use for the main project (there is exceptions for tasks like building and scripting) 
  - the custom stack allocator should be use in place of malloc unless its unreasonable to do so 
