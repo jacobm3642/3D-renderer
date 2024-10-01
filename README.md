@@ -27,6 +27,8 @@
  - [ ] Lisp embeding for scripting
  - [ ] state snapshot system
  - [ ] write a how to use guide
+ - [ ] a batched rendering system
+ - [ ] an object caching system
 
 ### smailler
  - [ ] a min heap for object rendering (distance from camera)
