@@ -70,12 +70,11 @@ float stringToFloat(char *string)
     int hasFraction = 0;
     float fractionDivisor = 1.0f;
 
-    // Check for a sign at the beginning of the string
     if (string[0] == '-') {
         sign = -1.0f;
-        i = 1; // Start processing digits from the next character
+        i = 1; 
     } else if (string[0] == '+') {
-        i = 1; // Skip the '+' sign and start processing digits
+        i = 1; 
     }
 
     for (; i < length; i++) {
@@ -88,12 +87,10 @@ float stringToFloat(char *string)
             }
         } else if (string[i] == '.') {
             if (hasFraction) {
-                // Multiple dots are not allowed
                 return -1.0f;
             }
             hasFraction = 1;
         } else {
-            // Invalid character detected, return an error value
             return -1.0f;
         }
     }

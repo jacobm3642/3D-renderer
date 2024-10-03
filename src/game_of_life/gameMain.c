@@ -27,32 +27,24 @@ int *init_game_state(Objnode **grid, vec2 size)
 
 int check_cell(int *game_state, vec2 size, int i)
 {
-        int count = 0;
-        if (!(i + 1 > size.x * size.y)) {
-                count += game_state[i + 1];
+    int count = 0;
+    int width = size.x;
+    int height = size.y;
+
+    int row = i / width;
+    int col = i % width;
+
+    for (int r = row - 1; r <= row + 1; ++r) {
+        for (int c = col - 1; c <= col + 1; ++c) {
+            if (r == row && c == col) continue;
+
+            if (r >= 0 && r < height && c >= 0 && c < width) {
+                count += game_state[r * width + c];
+            }
         }
-        if (i - 1 >= 0) {
-                count += game_state[i-1];
-        }
-        if (i + size.x < size.x * size.y) {
-                count += game_state[i + (int)size.x];
-        }
-        if (i - size.x >= 0) {
-                count += game_state[i - (int)size.x];
-        }
-        if (i + size.x + 1 < size.x * size.y) {
-                count += game_state[i + (int)size.x + 1];
-        }
-        if (i - size.x + 1 >= 0) {
-                count += game_state[i - (int)size.x + 1];
-        }
-        if (i + size.x - 1 < size.x * size.y) {
-                count += game_state[i + (int)size.x - 1];
-        }
-        if (i - size.x - 1 >= 0) {
-                count += game_state[i - (int)size.x - 1];
-        }
-        return count;
+    }
+
+    return count;
 }
 
 void update_state(int *game_state, vec2 size)
