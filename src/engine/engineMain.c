@@ -20,6 +20,18 @@ void handleEvent(WindowState *windowState)
                 case SDL_QUIT:
                         windowState->running = 0;
                         break;
+                case SDL_KEYUP:
+                        printf("key up detected\n");
+                        break;
+                case SDL_KEYDOWN:
+                        printf( "Key press detected\n" );
+                        break;
+                case SDL_MOUSEBUTTONDOWN:
+                        printf( "mouse press detected\n" );
+                        break;
+                case SDL_MOUSEBUTTONUP:
+                        printf( "mouse unpress detected\n" );
+                        break;
                 }
         }
 }
@@ -38,7 +50,7 @@ void mainLoop(WindowState *windowState)
         int grid_size = 10000;
         int n = 100;
         vec4 wi = {1, 1, 1, 1};
-        vec2 size = {n, n};
+        //vec2 size = {n, n};
         Objnode **grid = allocate(sizeof(intptr_t) * grid_size);
         for (int i = 0; i < grid_size; i++) {
                 grid[i] = add_man("basic.man");
@@ -70,10 +82,10 @@ void mainLoop(WindowState *windowState)
 
                 if (frameAcumulator >= frameTarget || !FRAME_LIMITED) {
 
-                        game_of_life(grid, size);
+                        //game_of_life(grid, size);
                         begin_frame();
 
-                        render_all();
+                        //render_all();
                         SDL_GL_SwapWindow(windowState->window);
                         fps++;
 
