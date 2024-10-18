@@ -50,7 +50,7 @@ void mainLoop(WindowState *windowState)
         int grid_size = 10000;
         int n = 100;
         vec4 wi = {1, 1, 1, 1};
-        //vec2 size = {n, n};
+        vec2 size = {n, n};
         Objnode **grid = allocate(sizeof(intptr_t) * grid_size);
         for (int i = 0; i < grid_size; i++) {
                 grid[i] = add_man("basic.man");
@@ -82,10 +82,10 @@ void mainLoop(WindowState *windowState)
 
                 if (frameAcumulator >= frameTarget || !FRAME_LIMITED) {
 
-                        //game_of_life(grid, size);
+                        game_of_life(grid, size);
                         begin_frame();
 
-                        //render_all();
+                        render_all();
                         SDL_GL_SwapWindow(windowState->window);
                         fps++;
 
